@@ -1,0 +1,6 @@
+# Ignore temporary emacs files
+*#
+#*
+*~
+
+*.pyc
