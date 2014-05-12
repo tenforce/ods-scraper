@@ -1,7 +1,7 @@
 #!/bin/sh
-rm -R csv; mkdir csv
+rm -R out; mkdir out
 scrapy crawl ebaTable
 scrapy crawl ebaStress
 scrapy crawl ebaExercise
-rm csv.zip
-zip -r csv.zip csv
+rm datasets.zip
+zip -r datasets.zip out

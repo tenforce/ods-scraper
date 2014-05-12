@@ -20,6 +20,7 @@ class DatasetItem(Item):
 
 class EbaSheet(Item):
     datasets = Field()
+    xlsxTemplate = Field()
 
 class Book( Item ):
     title = Field()

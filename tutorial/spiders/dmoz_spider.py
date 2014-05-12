@@ -23,6 +23,7 @@ class EbaTableSpider( Spider ):
         """Parses the EbaSheet available from the response."""
         sheet = EbaSheet()
         sheet['datasets'] = self.parse_datasets( response )
+        sheet['xlsxTemplate'] = "/tmp/template.xlsx"
         return sheet
 
     def parse_datasets( self , response ):
@@ -67,6 +68,7 @@ class EbaExerciseSpider( Spider ):
         rows = sel.xpath('//table[@class="Tabular"]//tr[td]')
         datasets = []
         sheet = EbaSheet()
+        sheet['xlsxTemplate'] = "/tmp/template.xlsx"
         for row in rows:
             spatial = [ t.strip() for t in row.xpath("td[1]//text()").extract() if re.compile('.*\S.*').match(t) ][0]
             for link in row.xpath("td[2]//a"):
