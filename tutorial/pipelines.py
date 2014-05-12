@@ -21,8 +21,6 @@ class EbaPipeline(object):
         for datasetIndex,dataset in enumerate(ebaSheet.get('datasets',[])):
             target_filename = os.path.join( "out", "%s-%s.xlsx" % (spider.name , datasetIndex) )
 
-            print "template is " + ebaSheet.get('xlsxTemplate')
-            
             with xlsxfile( ebaSheet.get('xlsxTemplate') , target_filename ) as xlsx:
                 ## base dataset metadata
                 self.write_dataset_base_metadata( xlsx , dataset )
@@ -38,6 +36,8 @@ class EbaPipeline(object):
         xlsx.replace(template_name('dataset/title'), dataset.get('title',''))
         xlsx.replace(template_name('dataset/description'), dataset.get('description',''))
         xlsx.replace(template_name('dataset/uri'), dataset.get('uri',''))
+        xlsx.replace(template_name('dataset/documentation/url'), dataset.get('documentationUrl',''))
+        xlsx.replace(template_name('dataset/documentation/title'), dataset.get('documentationTitle',''))
 
     def write_dataset_extra_metadata( self , xlsx , dataset ):
         """Adds the extra dataset metadata of the file, this is at the bottom of the xlsx"""

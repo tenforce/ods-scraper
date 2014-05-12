@@ -9,6 +9,17 @@ from tutorial.items import Book
 from tutorial.items import EbaSheet
 
 
+#########
+# Support
+#########
+
+def documentationTitle( response ):
+    return Selector(response).xpath('//title//text()').extract()[0].strip()
+
+def documentationUrl( response ):
+    return response.url
+
+
 ################
 # EbaTableSpider
 ################
@@ -36,6 +47,8 @@ class EbaTableSpider( Spider ):
                 dataset = DatasetItem()
                 item = DistributionItem()
                 dataset['distributions'] = [item]
+                dataset["documentationTitle"] = documentationTitle(response)
+                dataset["documentationUrl"] = documentationUrl(response)
 
                 dateArr = link.xpath(".//text()").extract()
                 dateLong = "".join( dateArr )
@@ -75,6 +88,8 @@ class EbaExerciseSpider( Spider ):
                 dataset = DatasetItem()
                 item = DistributionItem()
                 dataset["distributions"] = [item]
+                dataset["documentationTitle"] = documentationTitle(response)
+                dataset["documentationUrl"] = documentationUrl(response)
 
                 descArr = link.xpath(".//text()").extract()
                 descLong = "".join( descArr )

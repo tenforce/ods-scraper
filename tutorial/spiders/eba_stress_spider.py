@@ -30,8 +30,12 @@ class EbaStressSpider( Spider ):
     def parse_datasets(self, response):
         """Parses the datasets from the response."""
         datasets = []
-        for dataset_info in Selector ( response ).xpath('//div[@class="Timeline"]//dl'):
-            datasets.append( self.parse_dataset(dataset_info) )
+        selector = Selector( response )
+        for dataset_info in selector.xpath('//div[@class="Timeline"]//dl'):
+            dataset = self.parse_dataset(dataset_info)
+            dataset['documentationTitle'] = selector.xpath('//title//text()').extract()[0].strip()
+            dataset['documentationUrl'] = response.url
+            datasets.append( dataset )
         return datasets
 
     def parse_dataset(self, selector):
@@ -40,10 +44,12 @@ class EbaStressSpider( Spider ):
         uris = selector.xpath("dt//a//@href").extract()
         if len(uris) > 0:
             dataset["uri"] =  "http://www.eba.europa.eu" + uris[0]
+        else:
+            dataset["uri"] = ""
         dataset["title"] = selector.xpath("dt//text()").extract()[0].strip()
         dataset["description"] = ''.join(selector.xpath("dd//text()").extract())
         dataset["issued"] = selector.xpath("dd[@class='TLDate']//text()").extract()[0]
-        dataset["distributions"] = self.parse_distribution( selector, dataset['uri'] )
+        dataset["distributions"] = self.parse_distribution( selector, dataset.get('uri') )
         return dataset
 
     def parse_distribution(self, selector, uri):

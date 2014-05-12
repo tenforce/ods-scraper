@@ -17,6 +17,8 @@ class DatasetItem(Item):
     distributions = Field()
     spatial = Field()
     issued = Field()
+    documentationTitle = Field()
+    documentationUrl   = Field()
 
 class EbaSheet(Item):
     datasets = Field()
