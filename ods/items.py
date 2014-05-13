@@ -20,7 +20,7 @@ class DatasetItem(Item):
     documentationTitle = Field()
     documentationUrl   = Field()
 
-class EbaSheet(Item):
+class OdsSheet(Item):
     datasets = Field()
     xlsxTemplate = Field()
 

@@ -5,9 +5,9 @@ from scrapy.selector import Selector
 
 from ods.items import DistributionItem
 from ods.items import DatasetItem
-from ods.items import Book
-from ods.items import EbaSheet
+from ods.items import OdsSheet
 from ods.dictionary import country_uri
+from ods.spiders.base_spider import DeclarativeSpider, OdsSpider
 
 
 #########
@@ -31,16 +31,9 @@ class EbaTableSpider( Spider ):
         "http://www.eba.europa.eu/supervisory-convergence/supervisory-disclosure/aggregate-statistical-data"
     ]
     
-    def parse( self, response ):
-        """Parses the EbaSheet available from the response."""
-        sheet = EbaSheet()
-        sheet['datasets'] = self.parse_datasets( response )
-        sheet['xlsxTemplate'] = "/tmp/template.xlsx"
-        return sheet
-
-    def parse_datasets( self , response ):
+    def parse_datasets( self , selector, response ):
         """Parses the datasets from the response."""
-        sel = Selector( response ).xpath('//div[@class="journal-content-article"]')
+        sel = selector.xpath('//div[@class="journal-content-article"]')
         datasets = []
         for row in Selector( response ).xpath('//table[@class="Tabular"]//tr[td]'):
             base_title = row.xpath("td[1]//text()").extract()[0].strip()
@@ -81,7 +74,7 @@ class EbaExerciseSpider( Spider ):
         generalName = sel.xpath('//div[@class="journal-content-article"]//h1/text()').extract()[0].strip()
         rows = sel.xpath('//table[@class="Tabular"]//tr[td]')
         datasets = []
-        sheet = EbaSheet()
+        sheet = OdsSheet()
         sheet['xlsxTemplate'] = "/tmp/template.xlsx"
         for row in rows:
             page_spatial = [ t.strip() for t in row.xpath("td[1]//text()").extract() if re.compile('.*\S.*').match(t) ][0]
@@ -113,26 +106,19 @@ class EbaExerciseSpider( Spider ):
 # EbaStressSpider
 #################
 
-class EbaStressSpider( Spider ):
+class EbaStressSpider( OdsSpider ):
+    name = "ebaStress"
+
     start_urls = [
         "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2009",
         "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2010",
         "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2011",
         "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2014"
     ]
-    name = "ebaStress"
 
-    def parse( self, response ):
-        """Parses the EbaSheet available from the response."""
-        sheet = EbaSheet()
-        sheet['datasets'] = self.parse_datasets( response )
-        sheet['xlsxTemplate'] = "/tmp/template.xlsx"
-        return sheet
-
-    def parse_datasets(self, response):
+    def parse_datasets(self, selector, response):
         """Parses the datasets from the response."""
         datasets = []
-        selector = Selector( response )
         for dataset_info in selector.xpath('//div[@class="Timeline"]//dl'):
             dataset = self.parse_dataset(dataset_info)
             dataset['documentationTitle'] = selector.xpath('//title//text()').extract()[0].strip()
@@ -160,3 +146,32 @@ class EbaStressSpider( Spider ):
         distribution['description'] = ''.join(selector.xpath("dd//text()").extract())
         return [distribution]
 
+
+class DeclarativeEbaStressSpider( DeclarativeSpider ):
+    name = "declarativeEbaStress"
+
+    start_urls = [
+        "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2009",
+        "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2010",
+        "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2011",
+        "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2014"
+    ]
+    
+    def dataset_finder( self, selector ):
+        return selector.xpath('//div[@class="Timeline"]//dl')
+
+    def dataset_issued_date_finder( self, selector ):
+        return selector.xpath("dd[@class='TLDate']//text()").extract()[0]
+        
+    def dataset_title_finder( self, dataset, selector ):
+        return selector.xpath("dt//text()").extract()[0].strip()
+
+    def distribution_description_finder( self, selector ):
+        return ''.join(selector.xpath("dd//text()").extract())
+        
+    def distribution_access_url_finder( self, selector ):
+        uris = selector.xpath("dt//a//@href").extract()
+        if len(uris) > 0:
+            return "http://www.eba.europa.eu" + uris[0]
+        else:
+            return ""

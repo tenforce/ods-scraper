@@ -13,13 +13,13 @@ def template_name( path ):
 
 class OdsPipeline(object):
 
-    def process_item(self, ebaSheet, spider):
+    def process_item(self, odsSheet, spider):
         """Writes the sheet to a new xlsx file."""
         # we only have one item to process
-        for datasetIndex,dataset in enumerate(ebaSheet.get('datasets',[])):
+        for datasetIndex,dataset in enumerate(odsSheet.get('datasets',[])):
             target_filename = os.path.join( "out", "%s-%s.xlsx" % (spider.name , datasetIndex) )
 
-            with xlsxfile( ebaSheet.get('xlsxTemplate') , target_filename ) as xlsx:
+            with xlsxfile( odsSheet.get('xlsxTemplate') , target_filename ) as xlsx:
                 ## base dataset metadata
                 self.write_dataset_base_metadata( xlsx , dataset )
                 ## distributions
@@ -27,7 +27,7 @@ class OdsPipeline(object):
                 ## extra dataset metadata
                 self.write_dataset_extra_metadata( xlsx , dataset )
 
-        return ebaSheet
+        return odsSheet
 
     def write_dataset_base_metadata( self, xlsx, dataset ):
         """Writes the base dataset metadata of the file, this is at the top of the xlsx."""
