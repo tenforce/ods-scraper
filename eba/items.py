@@ -24,6 +24,3 @@ class EbaSheet(Item):
     datasets = Field()
     xlsxTemplate = Field()
 
-class Book( Item ):
-    title = Field()
-    abstract = Field()
