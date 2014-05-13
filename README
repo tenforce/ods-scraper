@@ -1,0 +1,30 @@
+= Getting started with the ODS scraper =
+
+This document describes how to install and set up the ODS scraper.
+
+
+== Installation ==
+
+First install python 2.7.  Then install scrapy. See 
+http://scrapy.org/download/ for more information.
+
+
+== Build your spider ==
+
+In order to build a spider, copy the ods/spiders/spider-example.py file
+to a file of your choice in the ods/spiders folder.  The file extension
+must be .py.
+
+
+== Run the spider ==
+
+Each spider has a name.  The name of the spider is supplied in the
+spider class.  Assuming your spider is called myOdsSpider, launch
+the spider by calling:
+
+```
+  scrapy crawl ebaTable $spiderName
+```
+
+or add the name of your spider to the relevant list in scrape-eba.sh
+and launch all selected spiders.

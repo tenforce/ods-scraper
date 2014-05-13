@@ -3,9 +3,7 @@ import re
 from scrapy.spider import Spider
 from scrapy.selector import Selector
 
-from ods.items import DistributionItem
-from ods.items import DatasetItem
-from ods.items import OdsSheet
+from ods.items import OdsSheet, DatasetItem, DistributionItem
 from ods.dictionary import country_uri
 from ods.spiders.base_spider import DeclarativeSpider, OdsSpider
 
@@ -14,10 +12,10 @@ from ods.spiders.base_spider import DeclarativeSpider, OdsSpider
 # Support
 #########
 
-def documentationTitle( response ):
+def documentation_title(response):
     return Selector(response).xpath('//title//text()').extract()[0].strip()
 
-def documentationUrl( response ):
+def documentation_url(response):
     return response.url
 
 
@@ -25,35 +23,35 @@ def documentationUrl( response ):
 # EbaTableSpider
 ################
 
-class EbaTableSpider( OdsSpider ):
+class EbaTableSpider(OdsSpider):
     name = "ebaTable"
     start_urls = [
         "http://www.eba.europa.eu/supervisory-convergence/supervisory-disclosure/aggregate-statistical-data"
     ]
     
-    def parse_datasets( self , selector, response ):
+    def parse_datasets(self , selector, response):
         """Parses the datasets from the response."""
         sel = selector.xpath('//div[@class="journal-content-article"]')
         datasets = []
-        for row in Selector( response ).xpath('//table[@class="Tabular"]//tr[td]'):
+        for row in Selector(response).xpath('//table[@class="Tabular"]//tr[td]'):
             base_title = row.xpath("td[1]//text()").extract()[0].strip()
             for link in row.xpath("td[2]//a"):
                 dataset = DatasetItem()
                 item = DistributionItem()
                 dataset['distributions'] = [item]
-                dataset["documentationTitle"] = documentationTitle(response)
-                dataset["documentationUrl"] = documentationUrl(response)
+                dataset["documentation_title"] = documentation_title(response)
+                dataset["documentation_url"] = documentation_url(response)
 
-                dateArr = link.xpath(".//text()").extract()
-                dateLong = "".join( dateArr )
-                date = re.sub( ' +', '', dateLong )
+                date_arr = link.xpath(".//text()").extract()
+                date_long = "".join( date_arr )
+                date = re.sub( ' +', '', date_long )
 
                 item['description'] = " ".join([base_title , date])
-                item['accessUrl'] = "http://www.eba.europa.eu" + link.xpath("@href").extract()[0]
+                item['access_url'] = "http://www.eba.europa.eu" + link.xpath("@href").extract()[0]
 
                 dataset['title'] = item['description']
                 dataset['issued'] = date
-                dataset['uri'] = item['accessUrl']
+                dataset['uri'] = item['access_url']
 
                 datasets.append(dataset)
         return datasets
@@ -62,40 +60,40 @@ class EbaTableSpider( OdsSpider ):
 # EbaExerciseSpider
 ###################
 
-class EbaExerciseSpider( Spider ):
+class EbaExerciseSpider(Spider):
     start_urls = [
         "http://www.eba.europa.eu/risk-analysis-and-data/eu-capital-exercise/final-results",
         "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2011/results"
     ]
     name="ebaExercise"
 
-    def parse( self, response ):
-        sel = Selector( response )
+    def parse(self, response):
+        sel = Selector(response)
         generalName = sel.xpath('//div[@class="journal-content-article"]//h1/text()').extract()[0].strip()
         rows = sel.xpath('//table[@class="Tabular"]//tr[td]')
         datasets = []
         sheet = OdsSheet()
         sheet['xlsxTemplate'] = "/tmp/template.xlsx"
         for row in rows:
-            page_spatial = [ t.strip() for t in row.xpath("td[1]//text()").extract() if re.compile('.*\S.*').match(t) ][0]
-            spatial = country_uri( page_spatial )
+            page_spatial = [t.strip() for t in row.xpath("td[1]//text()").extract() if re.compile('.*\S.*').match(t)][0]
+            spatial = country_uri(page_spatial)
             for link in row.xpath("td[2]//a"):
                 dataset = DatasetItem()
                 item = DistributionItem()
                 dataset["distributions"] = [item]
-                dataset["documentationTitle"] = documentationTitle(response)
-                dataset["documentationUrl"] = documentationUrl(response)
+                dataset["documentation_title"] = documentation_title(response)
+                dataset["documentation_url"] = documentation_url(response)
 
                 descArr = link.xpath(".//text()").extract()
-                descLong = "".join( descArr )
-                desc = re.sub( ' +', ' ', descLong )
+                descLong = "".join(descArr)
+                desc = re.sub(' +', ' ', descLong)
 
                 item['description'] = desc
-                item['accessUrl'] = "http://www.eba.europa.eu" + link.xpath("@href").extract()[0]
+                item['access_url'] = "http://www.eba.europa.eu" + link.xpath("@href").extract()[0]
         
                 dataset['title'] = item['description']
                 dataset['spatial'] = spatial
-                dataset['uri'] = item['accessUrl']
+                dataset['uri'] = item['access_url']
 
                 datasets.append(dataset)
         sheet['datasets'] = datasets
@@ -106,7 +104,7 @@ class EbaExerciseSpider( Spider ):
 # EbaStressSpider
 #################
 
-class EbaStressSpider( OdsSpider ):
+class EbaStressSpider(OdsSpider):
     name = "ebaStress"
 
     start_urls = [
@@ -121,9 +119,9 @@ class EbaStressSpider( OdsSpider ):
         datasets = []
         for dataset_info in selector.xpath('//div[@class="Timeline"]//dl'):
             dataset = self.parse_dataset(dataset_info)
-            dataset['documentationTitle'] = selector.xpath('//title//text()').extract()[0].strip()
-            dataset['documentationUrl'] = response.url
-            datasets.append( dataset )
+            dataset['documentation_title'] = selector.xpath('//title//text()').extract()[0].strip()
+            dataset['documentation_url'] = response.url
+            datasets.append(dataset)
         return datasets
 
     def parse_dataset(self, selector):
@@ -142,12 +140,12 @@ class EbaStressSpider( OdsSpider ):
 
     def parse_distribution(self, selector, uri):
         distribution = DistributionItem()
-        distribution['accessUrl'] =  uri
+        distribution['access_url'] =  uri
         distribution['description'] = ''.join(selector.xpath("dd//text()").extract())
         return [distribution]
 
 
-class DeclarativeEbaStressSpider( DeclarativeSpider ):
+class DeclarativeEbaStressSpider(DeclarativeSpider):
     name = "declarativeEbaStress"
 
     start_urls = [
@@ -157,19 +155,19 @@ class DeclarativeEbaStressSpider( DeclarativeSpider ):
         "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2014"
     ]
     
-    def dataset_finder( self, selector ):
+    def dataset_finder(self, selector):
         return selector.xpath('//div[@class="Timeline"]//dl')
 
-    def dataset_issued_date_finder( self, selector ):
+    def dataset_issued_date_finder(self, selector):
         return selector.xpath("dd[@class='TLDate']//text()").extract()[0]
         
-    def dataset_title_finder( self, dataset, selector ):
+    def dataset_title_finder(self, dataset, selector):
         return selector.xpath("dt//text()").extract()[0].strip()
 
-    def distribution_description_finder( self, selector ):
+    def distribution_description_finder(self, selector):
         return ''.join(selector.xpath("dd//text()").extract())
         
-    def distribution_access_url_finder( self, selector ):
+    def distribution_access_url_finder(self, selector):
         uris = selector.xpath("dt//a//@href").extract()
         if len(uris) > 0:
             return "http://www.eba.europa.eu" + uris[0]

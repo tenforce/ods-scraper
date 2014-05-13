@@ -1,7 +1,8 @@
 #!/bin/sh
 rm -R out; mkdir out
-scrapy crawl ebaTable
-scrapy crawl ebaStress
-scrapy crawl ebaExercise
+for spiderName in {ebaTable,ebaStress,ebaExercise}
+do
+    scrapy crawl ebaTable $spiderName
+done
 rm datasets.zip
 zip -r datasets.zip out

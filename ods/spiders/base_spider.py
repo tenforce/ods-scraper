@@ -8,25 +8,27 @@ import re
 from scrapy.spider import Spider
 from scrapy.selector import Selector
 from ods.items import OdsSheet, DatasetItem, DistributionItem
-from ods.dictionary import country_uri
 
 
-class OdsSpider( Spider ):
-    name = "ebaTable"
+class OdsSpider(Spider):
+    """Base spider for scraping ODS sites.  Provides some basic support for bootstrapping the spider."""
+    # name = "spiderName"
     start_urls = [
         "http://www.eba.europa.eu/supervisory-convergence/supervisory-disclosure/aggregate-statistical-data"
     ]
-    xlsx_template = "/tmp/template.xlsx"
+    xlsx_template = "template.xlsx"
     
-    def parse( self, response ):
+    def parse(self, response):
         """Parses the EbaSheet available from the response."""
         sheet = OdsSheet()
-        sheet['datasets'] = self.parse_datasets( Selector( response ), response )
-        sheet['xlsxTemplate'] = self.xlsx_template
+        sheet['datasets'] = self.parse_datasets(Selector(response), response)
+        sheet['xlsx_template'] = self.xlsx_template
         return sheet
 
-    def parse_datasets( self , selector, response ):
-        """Parses the datasets from the response."""
+    def parse_datasets(self, selector, response):
+        """Parses the datasets from the response.
+
+Included in the sourcecode is a stub body."""
         datasets = []
         # for link in selector.xpath('find_datasets'):
         #     dataset = DatasetItem()
@@ -44,7 +46,7 @@ class OdsSpider( Spider ):
         return datasets
 
 
-class DeclarativeSpider( OdsSpider ):
+class DeclarativeSpider(OdsSpider):
     """Declarative spider.  Supplying each of the functions fills in the content of the spider."""
     
     ## OVERRIDABLE CONTENT
@@ -53,67 +55,67 @@ class DeclarativeSpider( OdsSpider ):
     # start_urls = [ urls ]
     # xlsx_template = "/tmp/template.xlsx"
 
-    def dataset_finder( self, selector ):
+    def dataset_finder(self, selector):
         """Returns the selectors for the datasets found in the document."""
         return []
-    def distribution_finder( self, dataset_selector ):
+    def distribution_finder(self, dataset_selector):
         """Returns the selectors for the distributions found in the document."""
         return [dataset_selector]
 
-    def dataset_issued_date_finder( self, dataset_selector ):
+    def dataset_issued_date_finder(self, dataset_selector):
         """Returns the issued date for the dataset."""
         return ""
-    def dataset_documentation_title_finder( self, dataset_selector, response ):
-        """Returns the documentationTitle for the dataset."""
+    def dataset_documentation_title_finder(self, dataset_selector, response):
+        """Returns the documentation_title for the dataset."""
         return Selector(response).xpath('//title//text()').extract()[0].strip()
-    def dataset_documentation_url_finder( self, dataset_selector, response ):
-        """Returns the docuentationUrl for the dataset."""
+    def dataset_documentation_url_finder(self, dataset_selector, response):
+        """Returns the documentation_url for the dataset."""
         return response.url
-    def dataset_title_finder( self, dataset, dataset_selector ):
+    def dataset_title_finder(self, dataset, dataset_selector):
         """Returns the title for the dataset."""
         return ""
-    def dataset_description_finder( self, dataset, dataset_selector ):
+    def dataset_description_finder(self, dataset, dataset_selector):
         """Returns the description for the dataset."""
         if len(dataset['distributions'] > 0):
             return dataset['distributions'][0]['description']
         else:
             return ''
-    def dataset_uri_finder( self, dataset, dataset_selector ):
+    def dataset_uri_finder(self, dataset, dataset_selector):
         """Returns the uri for the dataset."""
         if len(dataset['distributions']) > 0:
-            return dataset['distributions'][0]['accessUrl']
+            return dataset['distributions'][0]['access_url']
         else:
             return ""
-    def dataset_spatial_finder( self, dataset, dataset_selector ):
+    def dataset_spatial_finder(self, dataset, dataset_selector):
         """Returns the spatial limitation for the dataset."""
         return ""
-    def distribution_description_finder( self, distribution_selector ):
+    def distribution_description_finder(self, distribution_selector):
         """Returns the description of the distribution."""
         return ""
-    def distribution_access_url_finder( self, distribution_selector ):
+    def distribution_access_url_finder(self, distribution_selector):
         """Returns the description of the distribution."""
         return ""
 
 
     ## PLUMBING
-    def parse_datasets( self, selector, response ):
+    def parse_datasets(self, selector, response):
         datasets = []
-        for datasetSelector in self.dataset_finder( selector ):
+        for dataset_selector in self.dataset_finder(selector):
             dataset = DatasetItem()
-            dataset['documentationTitle'] = self.dataset_documentation_title_finder( datasetSelector, response )
-            dataset['documentationUrl' ] = self.dataset_documentation_url_finder( datasetSelector, response )
-            dataset['issued'] = self.dataset_issued_date_finder( datasetSelector )
-            dataset['distributions'] = self.parse_distributions( datasetSelector )
-            dataset['title'] = self.dataset_title_finder( dataset, datasetSelector )
-            dataset['uri'] = self.dataset_uri_finder( dataset, datasetSelector )
+            dataset['documentation_title'] = self.dataset_documentation_title_finder(dataset_selector, response)
+            dataset['documentation_url' ] = self.dataset_documentation_url_finder(dataset_selector, response)
+            dataset['issued'] = self.dataset_issued_date_finder(dataset_selector)
+            dataset['distributions'] = self.parse_distributions(dataset_selector)
+            dataset['title'] = self.dataset_title_finder(dataset, dataset_selector)
+            dataset['uri'] = self.dataset_uri_finder(dataset, dataset_selector)
             datasets.append(dataset)
         return datasets
             
-    def parse_distributions( self, datasetSelector ):
+    def parse_distributions(self, dataset_selector):
         distributions = []
-        for distributionSelector in self.distribution_finder( datasetSelector ):
+        for distributionSelector in self.distribution_finder(dataset_selector):
             distribution = DistributionItem()
-            distribution['description'] = self.distribution_description_finder( distributionSelector )
-            distribution['accessUrl'] = self.distribution_access_url_finder( distributionSelector )
+            distribution['description'] = self.distribution_description_finder(distribution_selector)
+            distribution['access_url'] = self.distribution_access_url_finder(distribution_selector)
             distributions.append(distribution)
         return distributions

@@ -8,19 +8,19 @@ from scrapy.item import Item, Field
 class DistributionItem(Item):
     dataset = Field()
     description = Field()
-    accessUrl = Field()
+    access_url = Field()
 
 class DatasetItem(Item):
+    distributions = Field()
+    uri = Field()
     title = Field()
     description = Field()
-    uri = Field()
-    distributions = Field()
-    spatial = Field()
     issued = Field()
-    documentationTitle = Field()
-    documentationUrl   = Field()
+    spatial = Field()
+    documentation_title = Field()
+    documentation_url = Field()
 
 class OdsSheet(Item):
     datasets = Field()
-    xlsxTemplate = Field()
+    xlsx_template = Field()
 

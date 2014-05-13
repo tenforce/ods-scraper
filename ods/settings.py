@@ -5,14 +5,12 @@
 #
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 
-BOT_NAME = 'tf-ebabottle'
+BOT_NAME = 'tf-odsbottle'
 
 SPIDER_MODULES = ['ods.spiders']
 NEWSPIDER_MODULE = 'ods.spiders'
 
-ITEM_PIPELINES = {
-    "ods.pipelines.OdsPipeline": 300,
-}
+ITEM_PIPELINES = { "ods.pipelines.OdsPipeline": 300 }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'eba (+http://www.yourdomain.com)'
+#USER_AGENT = 'ods (+http://www.yourdomain.com)'

@@ -310,10 +310,9 @@ _country_dict = {
     u"zimbabwe": u"ZWE | Zimbabwe"
 }
 
-def country_uri( name ):
-    base = "" # http://publications.europa.eu/resource/authority/country/"
+def country_eba_identifier(name):
+    """Returns the eba identifier for the supplied country name, or the country name itself if no identifier could be found."""
     if name.lower() in _country_dict.keys():
-        dict = _country_dict[name.lower()]
-        return base + dict
+        return _country_dict[name.lower()]
     else:
         return name
