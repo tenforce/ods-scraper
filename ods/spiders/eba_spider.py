@@ -25,7 +25,7 @@ def documentationUrl( response ):
 # EbaTableSpider
 ################
 
-class EbaTableSpider( Spider ):
+class EbaTableSpider( OdsSpider ):
     name = "ebaTable"
     start_urls = [
         "http://www.eba.europa.eu/supervisory-convergence/supervisory-disclosure/aggregate-statistical-data"

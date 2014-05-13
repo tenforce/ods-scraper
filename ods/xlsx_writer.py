@@ -1,17 +1,25 @@
 import os, re, sys, codecs
 
+import shutil, zipfile, os, zipfile
+
 class xlsxfile:
     def __init__(self, source, target):
         self.source = source
         self.target = target
     def __enter__(self):
-        os.system('rm -Rf zip; mkdir zip')
-        os.system("unzip " + self.source + " -d zip")
+        shutil.rmtree('zip', True)
+        os.mkdir('zip')
+        zipf = zipfile.ZipFile(self.source)
+        zipf.extractall('zip')
         return self
     def __exit__(self, type, value, traceback):
-        os.system('cd zip; zip -r ' + '../' + self.target + ' *; rm -R ../zip')
+        with zipfile.ZipFile(self.target, 'w') as zipf: 
+            for root, dirs, files in os.walk("zip"): 
+                relroot = os.path.relpath(root, "zip") 
+                for file in files: 
+                    zipf.write(os.path.join(root, file), os.path.join(relroot, file))
+        shutil.rmtree('zip', True)
     def replace(self, original_value, new_value):
-        # print "Replacing " + original_value + " with " + new_value
         file = "zip/xl/sharedStrings.xml"
         out_fname = file + ".tmp"
         with codecs.open(file, 'r', 'utf-8') as f:
