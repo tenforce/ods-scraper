@@ -3,10 +3,11 @@ import re
 from scrapy.spider import Spider
 from scrapy.selector import Selector
 
-from tutorial.items import DistributionItem
-from tutorial.items import DatasetItem
-from tutorial.items import Book
-from tutorial.items import EbaSheet
+from eba.items import DistributionItem
+from eba.items import DatasetItem
+from eba.items import Book
+from eba.items import EbaSheet
+from eba.dictionary import country_uri
 
 
 #########
@@ -83,7 +84,8 @@ class EbaExerciseSpider( Spider ):
         sheet = EbaSheet()
         sheet['xlsxTemplate'] = "/tmp/template.xlsx"
         for row in rows:
-            spatial = [ t.strip() for t in row.xpath("td[1]//text()").extract() if re.compile('.*\S.*').match(t) ][0]
+            page_spatial = [ t.strip() for t in row.xpath("td[1]//text()").extract() if re.compile('.*\S.*').match(t) ][0]
+            spatial = country_uri( page_spatial )
             for link in row.xpath("td[2]//a"):
                 dataset = DatasetItem()
                 item = DistributionItem()

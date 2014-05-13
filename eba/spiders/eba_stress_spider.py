@@ -3,9 +3,9 @@ import re
 from scrapy.spider import Spider
 from scrapy.selector import Selector
 
-from tutorial.items import DistributionItem
-from tutorial.items import DatasetItem
-from tutorial.items import EbaSheet
+from eba.items import DistributionItem
+from eba.items import DatasetItem
+from eba.items import EbaSheet
 
 #################
 # EbaStressSpider

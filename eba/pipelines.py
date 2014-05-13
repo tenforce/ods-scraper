@@ -6,9 +6,7 @@
 from scrapy import signals
 from scrapy.contrib.exporter import XmlItemExporter
 import os.path
-import csv
-import csv, codecs, cStringIO
-from tutorial.xlsx_writer import xlsxfile
+from eba.xlsx_writer import xlsxfile
 
 def template_name( path ):
     return "__template.tenforce.com/" + path

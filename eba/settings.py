@@ -4,16 +4,15 @@
 # default. All the other settings are documented here:
 #
 #     http://doc.scrapy.org/en/latest/topics/settings.html
-#
 
-BOT_NAME = 'tutorial'
+BOT_NAME = 'tf-ebabottle'
 
-SPIDER_MODULES = ['tutorial.spiders']
-NEWSPIDER_MODULE = 'tutorial.spiders'
+SPIDER_MODULES = ['eba.spiders']
+NEWSPIDER_MODULE = 'eba.spiders'
 
 ITEM_PIPELINES = {
-    "tutorial.pipelines.EbaPipeline": 300,
+    "eba.pipelines.EbaPipeline": 300,
 }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'tutorial (+http://www.yourdomain.com)'
+#USER_AGENT = 'eba (+http://www.yourdomain.com)'
