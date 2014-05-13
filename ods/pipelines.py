@@ -6,12 +6,12 @@
 from scrapy import signals
 from scrapy.contrib.exporter import XmlItemExporter
 import os.path
-from eba.xlsx_writer import xlsxfile
+from ods.xlsx_writer import xlsxfile
 
 def template_name( path ):
     return "__template.tenforce.com/" + path
 
-class EbaPipeline(object):
+class OdsPipeline(object):
 
     def process_item(self, ebaSheet, spider):
         """Writes the sheet to a new xlsx file."""

@@ -7,11 +7,11 @@
 
 BOT_NAME = 'tf-ebabottle'
 
-SPIDER_MODULES = ['eba.spiders']
-NEWSPIDER_MODULE = 'eba.spiders'
+SPIDER_MODULES = ['ods.spiders']
+NEWSPIDER_MODULE = 'ods.spiders'
 
 ITEM_PIPELINES = {
-    "eba.pipelines.EbaPipeline": 300,
+    "ods.pipelines.OdsPipeline": 300,
 }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent

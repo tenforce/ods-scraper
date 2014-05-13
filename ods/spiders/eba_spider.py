@@ -3,11 +3,11 @@ import re
 from scrapy.spider import Spider
 from scrapy.selector import Selector
 
-from eba.items import DistributionItem
-from eba.items import DatasetItem
-from eba.items import Book
-from eba.items import EbaSheet
-from eba.dictionary import country_uri
+from ods.items import DistributionItem
+from ods.items import DatasetItem
+from ods.items import Book
+from ods.items import EbaSheet
+from ods.dictionary import country_uri
 
 
 #########
