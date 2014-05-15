@@ -17,12 +17,14 @@ class OdsSpider(Spider):
         "http://www.eba.europa.eu/supervisory-convergence/supervisory-disclosure/aggregate-statistical-data"
     ]
     xlsx_template = "template.xlsx"
-    
+    sheet_defaults = {}
+
     def parse(self, response):
         """Parses the EbaSheet available from the response."""
         sheet = OdsSheet()
-        sheet['datasets'] = self.parse_datasets(Selector(response), response)
+        sheet.add_datasets(self.parse_datasets(Selector(response), response))
         sheet['xlsx_template'] = self.xlsx_template
+        sheet.import_defaults(self.sheet_defaults)
         return sheet
 
     def parse_datasets(self, selector, response):
@@ -33,7 +35,7 @@ Included in the sourcecode is a stub body."""
         # for link in selector.xpath('find_datasets'):
         #     dataset = DatasetItem()
         #     item = DistributionItem()
-        #     dataset['distributions'] = [item]
+        #     dataset.add_distribution(item)
         #     dataset["documentationTitle"] = documentationTitle(response)
         #     dataset["documentationUrl"] = documentationUrl(response)
         #     item['description'] = link.xpath('find_description').extract()[0]
@@ -105,7 +107,7 @@ class DeclarativeSpider(OdsSpider):
             dataset['documentation_title'] = self.dataset_documentation_title_finder(dataset_selector, response)
             dataset['documentation_url' ] = self.dataset_documentation_url_finder(dataset_selector, response)
             dataset['issued'] = self.dataset_issued_date_finder(dataset_selector)
-            dataset['distributions'] = self.parse_distributions(dataset_selector)
+            dataset.add_distributions(self.parse_distributions(dataset_selector))
             dataset['title'] = self.dataset_title_finder(dataset, dataset_selector)
             dataset['uri'] = self.dataset_uri_finder(dataset, dataset_selector)
             datasets.append(dataset)

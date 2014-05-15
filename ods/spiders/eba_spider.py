@@ -28,6 +28,8 @@ class EbaTableSpider(OdsSpider):
     start_urls = [
         "http://www.eba.europa.eu/supervisory-convergence/supervisory-disclosure/aggregate-statistical-data"
     ]
+
+    sheet_defaults = {'sheet/spider': 'EbaTableSpider'}
     
     def parse_datasets(self , selector, response):
         """Parses the datasets from the response."""
@@ -37,8 +39,9 @@ class EbaTableSpider(OdsSpider):
             base_title = row.xpath("td[1]//text()").extract()[0].strip()
             for link in row.xpath("td[2]//a"):
                 dataset = DatasetItem()
+                dataset.set_default('dataset/base_title', base_title)
                 item = DistributionItem()
-                dataset['distributions'] = [item]
+                dataset.add_distribution(item)
                 dataset["documentation_title"] = documentation_title(response)
                 dataset["documentation_url"] = documentation_url(response)
 

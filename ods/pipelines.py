@@ -7,6 +7,8 @@ from scrapy import signals
 from scrapy.contrib.exporter import XmlItemExporter
 import os.path
 from ods.xlsx_writer import xlsxfile
+from ods.dictionary import default_dict_keys
+from ods.items import get_default
 
 def template_name(path):
     """Return the template identifier based on the relative portion of its name."""
@@ -29,6 +31,8 @@ class OdsPipeline(object):
                 self.write_distributions_info(xlsx, dataset)
                 ## extra dataset metadata
                 self.write_dataset_extra_metadata(xlsx, dataset)
+                ## enter default values
+                self.write_default_values(xlsx, dataset)
 
         return ods_sheet
 
@@ -60,3 +64,8 @@ class OdsPipeline(object):
             base = template_name("distribution/" + str(r))
             xlsx.replace(base + "/url", "")
             xlsx.replace(base + "/description", "")
+
+    def write_default_values(self, xlsx, dataset):
+        """Writes the default values in the xlsx file."""
+        for key in default_dict_keys():
+            xlsx.replace(template_name(key), get_default(key, dataset))
