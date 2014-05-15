@@ -23,7 +23,7 @@ spider class.  Assuming your spider is called myOdsSpider, launch
 the spider by calling:
 
 ```
-  scrapy crawl ebaTable $spiderName
+  scrapy crawl spiderName
 ```
 
 or add the name of your spider to the relevant list in scrape-eba.sh
