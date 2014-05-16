@@ -30,6 +30,7 @@ class EbaTableSpider(OdsSpider):
     ]
 
     sheet_defaults = {'sheet/spider': 'EbaTableSpider'}
+    sheet_prefixes = {'dataset/title': 'Dataset title prefix: '}
     
     def parse_datasets(self , selector, response):
         """Parses the datasets from the response."""

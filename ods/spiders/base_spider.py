@@ -18,6 +18,7 @@ class OdsSpider(Spider):
     ]
     xlsx_template = "template.xlsx"
     sheet_defaults = {}
+    sheet_prefixes = {}
 
     def parse(self, response):
         """Parses the EbaSheet available from the response."""
@@ -25,6 +26,7 @@ class OdsSpider(Spider):
         sheet.add_datasets(self.parse_datasets(Selector(response), response))
         sheet['xlsx_template'] = self.xlsx_template
         sheet.import_defaults(self.sheet_defaults)
+        sheet.import_prefixes(self.sheet_prefixes)
         return sheet
 
     def parse_datasets(self, selector, response):

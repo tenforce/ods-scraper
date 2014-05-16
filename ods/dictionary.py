@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 # The defaults dict should contain all application-wide default keys, with their default value.
 # Each key must have a value.  If it is optional, the empty string will suffice.
 defaults_dict = {
     # Example default settings set by the EbaTableSpider
-    'app/scraping_application_name': 'ODS Scrapy the Scraper', 
+    'app/scraping_application_name': 'Scrapy the Scraper', 
     'dataset/base_title':'app default base title',
     'sheet/spider':'app default sheet spider',
     # Real-life settings
@@ -21,6 +22,19 @@ def default_dict_keys():
     """Returns the keys of the default dictionary."""
     return defaults_dict.keys()
 
+
+prefixes_dict = {
+    # Example prefix set by the EbaTableSpider
+    'app/scraping_application_name': 'ODS',
+    # Real-life prefixes
+}
+
+def get_default_prefix(path):
+    """Returns the application-wide default prefix value for the supplied key."""
+    if path in prefixes_dict.keys():
+        return prefixes_dict[path]
+    else:
+        return ''
 
 
 _country_dict = {

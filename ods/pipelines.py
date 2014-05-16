@@ -8,11 +8,21 @@ from scrapy.contrib.exporter import XmlItemExporter
 import os.path
 from ods.xlsx_writer import xlsxfile
 from ods.dictionary import default_dict_keys
-from ods.items import get_default
+from ods.items import get_default, get_prefix
 
 def template_name(path):
     """Return the template identifier based on the relative portion of its name."""
     return "__template.tenforce.com/" + path
+
+
+class prefixableReplacer:
+    """Provides support for replacing values in an object through an xlsxfile, an object to act on and a path and a key in the replacement itself."""
+    def __init__(self, xlsx, target):
+        self.xlsx = xlsx
+        self.target = target
+
+    def replace(self, path, key):
+        self.xlsx.replace(template_name(path), self.target.pget(key,path,''))
 
 
 class OdsPipeline(object):
@@ -38,22 +48,24 @@ class OdsPipeline(object):
 
     def write_dataset_base_metadata(self, xlsx, dataset):
         """Writes the base dataset metadata of the file, this is at the top of the xlsx."""
-        xlsx.replace(template_name('dataset/title'), dataset.get('title', ''))
-        xlsx.replace(template_name('dataset/description'), dataset.get('description', ''))
-        xlsx.replace(template_name('dataset/uri'), dataset.get('uri', ''))
-        xlsx.replace(template_name('dataset/documentation/url'), dataset.get('documentation_url', ''))
-        xlsx.replace(template_name('dataset/documentation/title'), dataset.get('documentation_title', ''))
+        template = prefixableReplacer( xlsx, dataset )
+        template.replace('dataset/title','title')
+        template.replace('dataset/description','description')
+        template.replace('dataset/uri','uri')
+        template.replace('dataset/documentation/url','documentation_url')
+        template.replace('dataset/documentation/title','documentation_title')
 
     def write_dataset_extra_metadata(self, xlsx, dataset):
         """Adds the extra dataset metadata of the file, this is at the bottom of the xlsx"""
-        xlsx.replace(template_name('dataset/geo'), dataset.get('spatial', ''))
-        xlsx.replace(template_name('dataset/issued'), dataset.get('issued', ''))
+        template = prefixableReplacer( xlsx, dataset )
+        template.replace('dataset/geo', 'spatial')
+        template.replace('dataset/issued','issued')
         
     def write_distributions_info(self, xlsx, dataset):
         """Writes the info about each of the distributions."""
         distributions = dataset.get('distributions', [])
         row = 1
-
+            
         for distribution in distributions:
             base = template_name("distribution/" + str(row))
             xlsx.replace(base + "/url", distribution.get('access_url', ''))
@@ -68,4 +80,4 @@ class OdsPipeline(object):
     def write_default_values(self, xlsx, dataset):
         """Writes the default values in the xlsx file."""
         for key in default_dict_keys():
-            xlsx.replace(template_name(key), get_default(key, dataset))
+            xlsx.replace(template_name(key), get_prefix(key, dataset) + get_default(key, dataset))

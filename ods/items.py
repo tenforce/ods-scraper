@@ -4,32 +4,48 @@
 # http://doc.scrapy.org/en/latest/topics/items.html
 
 from scrapy.item import Item, Field
-from ods.dictionary import get_dictionary_default
+from ods.dictionary import get_dictionary_default, get_default_prefix
 
 def get_default(path, target):
-    """Retrieves the default value for the supplied path.  eg: /datasets/publisher"""
+    """Retrieves the default value for the supplied path (eg: /datasets/publisher).  Bubbling up from target."""
     current_item_defaults = target['defaults']
-
     if path in current_item_defaults:
         return current_item_defaults[path]
-    elif isinstance(target['wrapper'], ItemWithDefaults):
+    elif isinstance(target['wrapper'], OdsExtendedItem):
         return get_default(path, target['wrapper'])
     else:
         return get_dictionary_default(path)
 
+def get_prefix(path, target):
+    """Retrieves the default value for the supplied path (eg: /datasets/publisher).  Bubbling up from target."""
+    current_item_prefixes = target['prefixes']
+    if path in current_item_prefixes:
+        return current_item_prefixes[path]
+    elif isinstance(target['wrapper'], OdsExtendedItem):
+        return get_prefix(path, target['wrapper'])
+    else:
+        return get_default_prefix(path)
 
-class ItemWithDefaults(Item):
+
+class OdsExtendedItem(Item):
+    """Wrapped item with support for defaults and prefixes."""
     defaults = Field()
     wrapper = Field()
+    prefixes = Field()
     
     def __init__(self, *args, **kw):
-        super(ItemWithDefaults, self).__init__(*args, **kw)
+        super(OdsExtendedItem, self).__init__(*args, **kw)
         self['defaults'] = {}
+        self['prefixes'] = {}
         self['wrapper'] = None
 
     def set_default(self, path, value):
         """Sets the default value for path to value."""
         self['defaults'][path] = value
+
+    def set_prefix(self, path, value):
+        """Sets the prefix for path to value."""
+        self['prefixes'][path] = value
 
     def set_wrapper(self, value):
         """Sets the item's wrapper"""
@@ -40,6 +56,18 @@ class ItemWithDefaults(Item):
         for key in defaults.keys():
             self.set_default(key, defaults[key])
 
+    def import_prefixes(self, prefixes):
+        """Imports a dictionary of prefixes."""
+        for key in prefixes.keys():
+            self.set_prefix(key, prefixes[key])
+    
+    def pget(self, key, path, default):
+        """Prefixed version of get.  The prefix is only applied if the value had been set."""
+        if key in self:
+            return get_prefix(path, self) + self.get(key)
+        else:
+            return default
+
 
 class DistributionItem(Item):
     dataset = Field()
@@ -49,7 +77,7 @@ class DistributionItem(Item):
     def __str__(self):
         return "DistributionItem(access_url=%s)" % self['access_url']
 
-class DatasetItem(ItemWithDefaults):
+class DatasetItem(OdsExtendedItem):
     distributions = Field()
     uri = Field()
     title = Field()
@@ -75,7 +103,7 @@ class DatasetItem(ItemWithDefaults):
         for distribution in distributions:
             self.add_distribution(distribution)
 
-class OdsSheet(ItemWithDefaults):
+class OdsSheet(OdsExtendedItem):
     datasets = Field()
     xlsx_template = Field()
     
