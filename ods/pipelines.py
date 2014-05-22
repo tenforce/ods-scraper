@@ -60,6 +60,7 @@ class OdsPipeline(object):
         template = prefixableReplacer( xlsx, dataset )
         template.replace('dataset/geo', 'spatial')
         template.replace('dataset/issued','issued')
+        xlsx.replace(template_name('dataset/ckan-name'), dataset.ckan_name())
         
     def write_distributions_info(self, xlsx, dataset):
         """Writes the info about each of the distributions."""

@@ -94,6 +94,10 @@ class DatasetItem(OdsExtendedItem):
     def __str__(self):
         return "DatasetItem(uri=%s)" % self['uri']
 
+    def ckan_name(self):
+        """Returns the ckan-name, which is a name based on the title"""
+        return self.get('title','').replace(' ','_')
+
     def add_distribution(self, distribution):
         """Adds a single distribution to the dataset."""
         self['distributions'].append(distribution)
