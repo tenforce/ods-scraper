@@ -10,10 +10,10 @@ from ods.spiders import DeclarativeSpider, OdsSpider
 class MyDeclarativeExampleSpider(DeclarativeSpider):
     """Declarative example spider.  Supplying each of the functions fills in the content of your files."""
 
-    # (obligatory) name of your spider
+    # (mandatory) name of your spider
     name = "my-declarative-spider-name"
 
-    # (obligatory) urls which will be scraped
+    # (mandatory) urls which will be scraped
     start_urls = [ "http://my-path/first", "http://my-path/second" ]
 
     # (optional) override the template to be used for this scraper
@@ -30,7 +30,7 @@ class MyDeclarativeExampleSpider(DeclarativeSpider):
     # (optional) dictionary containing the prefixes placed on the sheet of this spider.
     # sheet_prefixes = { 'dataset/title': "Title prefix" }
 
-    # (obligatory) executes a selector which returns an array of selectors, selector being a dataset.
+    # (mandatory) executes a selector which returns an array of selectors, selector being a dataset.
     def dataset_finder(self, selector):
         """Returns the selectors for the datasets found in the document."""
         return []
@@ -106,10 +106,10 @@ class MyDeclarativeExampleSpider(DeclarativeSpider):
 class  myOdsSpiderExample(OdsSpider):
     """Complex example spider."""
 
-    # (obligatory) name of your spider
+    # (mandatory) name of your spider
     name = "my-declarative-spider-name"
 
-    # (obligatory) urls which will be scraped
+    # (mandatory) urls which will be scraped
     start_urls = [ "http://my-path/first", "http://my-path/second" ]
 
     # (optional) override the template to be used for this scraper
@@ -126,11 +126,11 @@ class  myOdsSpiderExample(OdsSpider):
     # (optional) dictionary containing the prefixes placed on the sheet of this spider.
     # sheet_prefixes = { 'dataset/title': "Title prefix" }
 
-    # (obligatory) parse the site and return a series of datasets, based on a Selector
-    #              object for the root of the page, and the response object.
-    #              This function must return the list of datasets with all their
-    #              information filled in.
-    #              below is a rough stub body which may be used as a starting point.
+    # (mandatory) parse the site and return a series of datasets, based on a Selector
+    #             object for the root of the page, and the response object.
+    #             This function must return the list of datasets with all their
+    #             information filled in.
+    #             below is a rough stub body which may be used as a starting point.
     def parse_datasets(self, selector, response):
         """Parses the datasets from the response."""
         datasets = []
