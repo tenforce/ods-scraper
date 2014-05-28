@@ -1,5 +1,7 @@
 import re
 
+from urlparse import urlparse
+
 from scrapy.spider import Spider
 from scrapy.selector import Selector
 
@@ -34,9 +36,8 @@ class EbaTableSpider(OdsSpider):
     
     def parse_datasets(self , selector, response):
         """Parses the datasets from the response."""
-        sel = selector.xpath('//div[@class="journal-content-article"]')
         datasets = []
-        for row in Selector(response).xpath('//table[@class="Tabular"]//tr[td]'):
+        for row in selector.xpath('//table[@class="Tabular"]//tr[td]'):
             base_title = row.xpath("td[1]//text()").extract()[0].strip()
             for link in row.xpath("td[2]//a"):
                 dataset = DatasetItem()
@@ -51,7 +52,7 @@ class EbaTableSpider(OdsSpider):
                 date = re.sub( ' +', '', date_long )
 
                 item['description'] = " ".join([base_title , date])
-                item['access_url'] = "http://www.eba.europa.eu" + link.xpath("@href").extract()[0]
+                item['access_url'] = urlparse.urljoin("http://www.eba.europa.eu", link.xpath("@href").extract()[0])
 
                 dataset['title'] = item['description']
                 dataset['issued'] = date
@@ -65,6 +66,7 @@ class EbaTableSpider(OdsSpider):
 ###################
 
 class EbaExerciseSpider(Spider):
+    """Parses the eu capital exercise.  This extends Spider instead of OdsSpider and provides a manual example."""
     start_urls = [
         "http://www.eba.europa.eu/risk-analysis-and-data/eu-capital-exercise/final-results",
         "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2011/results"
@@ -93,7 +95,7 @@ class EbaExerciseSpider(Spider):
                 desc = re.sub(' +', ' ', descLong)
 
                 item['description'] = desc
-                item['access_url'] = "http://www.eba.europa.eu" + link.xpath("@href").extract()[0]
+                item['access_url'] = urlparse.urljoin("http://www.eba.europa.eu", link.xpath("@href").extract()[0])
         
                 dataset['title'] = item['description']
                 dataset['spatial'] = spatial
