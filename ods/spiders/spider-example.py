@@ -29,6 +29,9 @@ class MyDeclarativeExampleSpider(DeclarativeSpider):
     #            ods.dictionary.defaults_dict
     # sheet_defaults = { 'tags': "Finance, Eba", 'author/name': "eba" }
 
+    # (optional) dictionary containing the prefixes placed on the sheet of this spider.
+    # sheet_prefixes = { 'dataset/title': "Title prefix" }
+
     # (obligatory) executes a selector which returns an array of selectors, selector being a dataset.
     def dataset_finder(self, selector):
         """Returns the selectors for the datasets found in the document."""
@@ -113,6 +116,17 @@ class  myOdsSpiderExample(OdsSpider):
 
     # (optional) override the template to be used for this scraper
     # xlsx_template = "override for template location, eg: /path/to/template.xlsx"
+
+    # (optional) dictionary containing the defaults placed on the sheet of this spider.  these keys
+    #            will be prefixed with the standard template prefix key.  the resulting keys are
+    #            replaced by the corresponding value.  in this example
+    #            __template.tenforce.com/tags would be replaced by "Finance, Eba"
+    #            in order to get the replacement working, the key must also appear as a key of
+    #            ods.dictionary.defaults_dict
+    # sheet_defaults = { 'tags': "Finance, Eba", 'author/name': "eba" }
+
+    # (optional) dictionary containing the prefixes placed on the sheet of this spider.
+    # sheet_prefixes = { 'dataset/title': "Title prefix" }
 
     # (obligatory) parse the site and return a series of datasets, based on a Selector
     #              object for the root of the page, and the response object.
