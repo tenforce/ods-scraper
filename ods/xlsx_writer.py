@@ -16,7 +16,7 @@ class xlsxfile:
         return self
 
     def __exit__(self, type, value, traceback):
-        with zipfile.ZipFile(self.target, 'w') as zipf: 
+        with zipfile.ZipFile(self.target, 'w', zipfile.ZIP_DEFLATED) as zipf: 
             for root, dirs, files in os.walk("zip"): 
                 relroot = os.path.relpath(root, "zip") 
                 for file in files: 
