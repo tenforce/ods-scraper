@@ -38,14 +38,14 @@ Included in the sourcecode is a stub body."""
         #     dataset = DatasetItem()
         #     item = DistributionItem()
         #     dataset.add_distribution(item)
-        #     dataset["documentationTitle"] = documentationTitle(response)
-        #     dataset["documentationUrl"] = documentationUrl(response)
+        #     dataset["documentation_title"] = documentation_title(response)
+        #     dataset["documentation_url"] = documentation_url(response)
         #     item['description'] = link.xpath('find_description').extract()[0]
-        #     item['accessUrl'] = link.xpath('find_access_url').extract()[0]
+        #     item['access_url'] = link.xpath('find_access_url').extract()[0]
         #     dataset['title'] = item['description']
         #     dataset['issued'] = link.xpath('find_issued_date').extract()[0]
         #     dataset['spatial'] = link.xpath('find_spatial').extract()[0]
-        #     dataset['uri'] = item['accessUrl']
+        #     dataset['uri'] = item['access_url']
         #     datasets.append(dataset)
         return datasets
 
