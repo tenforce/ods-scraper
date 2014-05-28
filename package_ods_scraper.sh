@@ -33,5 +33,5 @@ else
     zip -r $NEW_ZIP_NAME $NEW_NAME 2>/dev/null 1>&2
     echo "DONE"
 
-    echo "Your new ODS Scraper build is available in $NEW_BASE, the zip is available at $NEW_ZIP"
+    echo "Your new ODS Scraper build is available in $NEW_BASE, the zip is available at ../$NEW_ZIP_NAME"
 fi
