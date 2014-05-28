@@ -1,6 +1,6 @@
 import re
 
-from urlparse import urlparse
+import urlparse
 
 from scrapy.spider import Spider
 from scrapy.selector import Selector
@@ -81,7 +81,7 @@ class EbaExerciseSpider(Spider):
         sheet = OdsSheet()
         sheet['xlsx_template'] = "template.xlsx"
         for row in rows:
-            page_spatial = [t.strip() for t in row.xpath("td[1]//text()").extract() if re.match(r’.*\S.*’, t)][0]
+            page_spatial = [t.strip() for t in row.xpath("td[1]//text()").extract() if re.match(r'.*\S.*', t)][0]
             spatial = country_identifier(page_spatial)
             for link in row.xpath("td[2]//a"):
                 dataset = DatasetItem()

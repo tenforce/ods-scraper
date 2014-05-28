@@ -1,5 +1,3 @@
-from scrapy.spider import Spider
-from scrapy.selector import Selector
 from ods.items import OdsSheet, DatasetItem, DistributionItem
 
 from ods.dictionary import country_identifier
