@@ -4,7 +4,7 @@ from scrapy.spider import Spider
 from scrapy.selector import Selector
 
 from ods.items import OdsSheet, DatasetItem, DistributionItem
-from ods.dictionary import country_eba_identifier
+from ods.dictionary import country_identifier
 from ods.spiders.base_spider import DeclarativeSpider, OdsSpider
 
 
@@ -80,7 +80,7 @@ class EbaExerciseSpider(Spider):
         sheet['xlsx_template'] = "template.xlsx"
         for row in rows:
             page_spatial = [t.strip() for t in row.xpath("td[1]//text()").extract() if re.compile('.*\S.*').match(t)][0]
-            spatial = country_eba_identifier(page_spatial)
+            spatial = country_identifier(page_spatial)
             for link in row.xpath("td[2]//a"):
                 dataset = DatasetItem()
                 item = DistributionItem()

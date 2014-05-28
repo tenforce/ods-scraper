@@ -2,7 +2,7 @@ from scrapy.spider import Spider
 from scrapy.selector import Selector
 from ods.items import OdsSheet, DatasetItem, DistributionItem
 
-from ods.dictionary import country_eba_identifier
+from ods.dictionary import country_identifier
 from ods.spiders.base_spider import DeclarativeSpider, OdsSpider
 
 

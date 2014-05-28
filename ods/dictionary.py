@@ -348,7 +348,7 @@ _country_dict = {
     u"zimbabwe": u"ZWE | Zimbabwe"
 }
 
-def country_eba_identifier(name):
+def country_identifier(name):
     """Returns the eba identifier for the supplied country name, or the country name itself if no identifier could be found."""
     if name.lower() in _country_dict.keys():
         return _country_dict[name.lower()]
