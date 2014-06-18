@@ -104,6 +104,10 @@ class DeclarativeSpider(OdsSpider):
         """Returns the distribution_type of the distribution."""
         return ""
 
+    def distribution_format_finder(self, distribution_selector):
+        """Returns the format of the distribution."""
+        return ""
+
     ## PLUMBING
     def parse_datasets(self, selector, response):
         datasets = []

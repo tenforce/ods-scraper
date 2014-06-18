@@ -54,6 +54,7 @@ class EbaTableSpider(OdsSpider):
                 item['description'] = " ".join([base_title , date])
                 item['access_url'] = urlparse.urljoin("http://www.eba.europa.eu", link.xpath("@href").extract()[0])
                 item['distribution_type'] = "dcat:Download"
+                item['distribution_format'] = "XLS"
 
                 dataset['title'] = item['description']
                 dataset['description'] = item['description']
@@ -101,6 +102,7 @@ class EbaExerciseSpider(Spider):
                 item['description'] = desc
                 item['access_url'] = urlparse.urljoin("http://www.eba.europa.eu", link.xpath("@href").extract()[0])
                 item['distribution_type'] = "dcat:Download"
+                item['distribution_format'] = "PDF"
         
                 dataset['title'] = item['description']
                 dataset['description'] = item['description']
@@ -157,6 +159,7 @@ class EbaStressSpider(OdsSpider):
         distribution['access_url'] =  uri
         distribution['description'] = ''.join(selector.xpath("dd//text()").extract())
         distribution['distribution_type'] = "dcat:Download"
+        distribution['distribution_format'] = "PDF"
         return [distribution]
 
 
@@ -196,3 +199,6 @@ class DeclarativeEbaStressSpider(DeclarativeSpider):
 
     def distribution_type_finder(self, selector):
         return "dcat:Download"
+
+    def distribution_format_finder(self, selector):
+        return "PDF"

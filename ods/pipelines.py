@@ -72,6 +72,7 @@ class OdsPipeline(object):
             xlsx.replace(base + "/url", distribution.get('access_url', ''))
             xlsx.replace(base + "/description", distribution.get('description', ''))
             xlsx.replace(base + "/distribution_type", distribution.get('distribution_type', ''))
+            xlsx.replace(base + "/format", distribution.get('distribution_format', ''))
             row = row + 1
 
         for r in range(row,30):
@@ -79,6 +80,7 @@ class OdsPipeline(object):
             xlsx.replace(base + "/url", "")
             xlsx.replace(base + "/description", "")
             xlsx.replace(base + "/distribution_type", '')
+            xlsx.replace(base + "/format", '')
 
     def write_default_values(self, xlsx, dataset):
         """Writes the default values in the xlsx file."""
