@@ -195,4 +195,4 @@ class DeclarativeEbaStressSpider(DeclarativeSpider):
             return ""
 
     def distribution_type_finder(self, selector):
-        "dcat:Download"
+        return "dcat:Download"
