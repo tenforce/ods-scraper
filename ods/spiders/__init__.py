@@ -124,7 +124,7 @@ class DeclarativeSpider(OdsSpider):
             
     def parse_distributions(self, dataset_selector):
         distributions = []
-        for distributionSelector in self.distribution_finder(dataset_selector):
+        for distribution_selector in self.distribution_finder(dataset_selector):
             distribution = DistributionItem()
             distribution['description'] = self.distribution_description_finder(distribution_selector)
             distribution['access_url'] = self.distribution_access_url_finder(distribution_selector)

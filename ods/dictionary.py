@@ -9,7 +9,7 @@ defaults_dict = {
     # Real-life settings
     'tags':'',
     'author/name':'',
-    'dataset/distribution/type':'dcat:Download'
+    'dataset/distribution/type':'dcat:Download',
     'dataset/distribution/format':'PDF'
 }
 

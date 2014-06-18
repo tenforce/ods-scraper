@@ -110,7 +110,9 @@ class EbaExerciseSpider(Spider):
                 dataset['uri'] = item['access_url']
 
                 datasets.append(dataset)
-        sheet['datasets'] = datasets
+        sheet.add_datasets( datasets )
+        sheet.import_defaults({})
+        sheet.import_prefixes({'dataset/title': 'Capital Exercise for bank: '})
         return [sheet]
 
 
@@ -148,7 +150,7 @@ class EbaStressSpider(OdsSpider):
             dataset["uri"] =  "http://www.eba.europa.eu" + uris[0]
         else:
             dataset["uri"] = ""
-        dataset["title"] = selector.xpath("dt//text()").extract()[0].strip()
+        dataset["title"] = "".join(selector.xpath("dt//text()").extract()).strip()
         dataset["description"] = ''.join(selector.xpath("dd//text()").extract())
         dataset["issued"] = selector.xpath("dd[@class='TLDate']//text()").extract()[0]
         dataset["distributions"] = self.parse_distribution( selector, dataset.get('uri') )
@@ -182,7 +184,7 @@ class DeclarativeEbaStressSpider(DeclarativeSpider):
         return selector.xpath("dd[@class='TLDate']//text()").extract()[0]
         
     def dataset_title_finder(self, dataset, selector):
-        return selector.xpath("dt//text()").extract()[0].strip()
+        return "".join(selector.xpath("dt//text()").extract()).strip()
 
     def dataset_description_finder(self, dataset, selector):
         return selector.xpath("dt//text()").extract()[0].strip()
