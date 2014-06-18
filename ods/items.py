@@ -3,6 +3,8 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
 
+import re
+
 from scrapy.item import Item, Field
 from ods.dictionary import get_dictionary_default, get_default_prefix
 
@@ -74,6 +76,7 @@ class DistributionItem(Item):
     description = Field()
     access_url = Field()
     distribution_type = Field()
+    distribution_format = Field()
 
     def __str__(self):
         return "DistributionItem(access_url=%s)" % self['access_url']
@@ -97,7 +100,7 @@ class DatasetItem(OdsExtendedItem):
 
     def ckan_name(self):
         """Returns the ckan-name, which is a name based on the title"""
-        return self.get('title','').replace(' ','_')
+        return re.sub( '[^A-Za-z0-9\-]+', '-', self.get('title','')).lower()
 
     def add_distribution(self, distribution):
         """Adds a single distribution to the dataset."""
