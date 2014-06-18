@@ -56,6 +56,7 @@ class EbaTableSpider(OdsSpider):
                 item['distribution_type'] = "dcat:Download"
 
                 dataset['title'] = item['description']
+                dataset['description'] = item['description']
                 dataset['issued'] = date
                 dataset['uri'] = item['access_url']
 
@@ -102,6 +103,7 @@ class EbaExerciseSpider(Spider):
                 item['distribution_type'] = "dcat:Download"
         
                 dataset['title'] = item['description']
+                dataset['description'] = item['description']
                 dataset['spatial'] = spatial
                 dataset['uri'] = item['access_url']
 
@@ -177,6 +179,9 @@ class DeclarativeEbaStressSpider(DeclarativeSpider):
         return selector.xpath("dd[@class='TLDate']//text()").extract()[0]
         
     def dataset_title_finder(self, dataset, selector):
+        return selector.xpath("dt//text()").extract()[0].strip()
+
+    def dataset_description_finder(self, dataset, selector):
         return selector.xpath("dt//text()").extract()[0].strip()
 
     def distribution_description_finder(self, selector):
