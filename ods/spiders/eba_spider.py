@@ -32,7 +32,7 @@ class EbaTableSpider(OdsSpider):
     ]
 
     sheet_defaults = {'sheet/spider': 'EbaTableSpider'}
-    sheet_prefixes = {'dataset/title': 'Dataset title prefix: '}
+    sheet_prefixes = {'dataset/title': ''}
     
     def parse_datasets(self , selector, response):
         """Parses the datasets from the response."""
@@ -53,8 +53,11 @@ class EbaTableSpider(OdsSpider):
 
                 item['description'] = " ".join([base_title , date])
                 item['access_url'] = urlparse.urljoin("http://www.eba.europa.eu", link.xpath("@href").extract()[0])
+                item['distribution_type'] = "dcat:Download"
+                item['distribution_format'] = "XLS"
 
                 dataset['title'] = item['description']
+                dataset['description'] = item['description']
                 dataset['issued'] = date
                 dataset['uri'] = item['access_url']
 
@@ -72,6 +75,8 @@ class EbaExerciseSpider(Spider):
         "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2011/results"
     ]
     name="ebaExercise"
+
+    sheet_prefixes = {'dataset/title': 'Capital Exercise for bank: '}
 
     def parse(self, response):
         sel = Selector(response)
@@ -96,8 +101,11 @@ class EbaExerciseSpider(Spider):
 
                 item['description'] = desc
                 item['access_url'] = urlparse.urljoin("http://www.eba.europa.eu", link.xpath("@href").extract()[0])
+                item['distribution_type'] = "dcat:Download"
+                item['distribution_format'] = "PDF"
         
                 dataset['title'] = item['description']
+                dataset['description'] = item['description']
                 dataset['spatial'] = spatial
                 dataset['uri'] = item['access_url']
 
@@ -119,6 +127,8 @@ class EbaStressSpider(OdsSpider):
         "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2011",
         "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2014"
     ]
+
+    sheet_prefixes = {'dataset/title': 'Stress report: '}
 
     def parse_datasets(self, selector, response):
         """Parses the datasets from the response."""
@@ -148,6 +158,8 @@ class EbaStressSpider(OdsSpider):
         distribution = DistributionItem()
         distribution['access_url'] =  uri
         distribution['description'] = ''.join(selector.xpath("dd//text()").extract())
+        distribution['distribution_type'] = "dcat:Download"
+        distribution['distribution_format'] = "PDF"
         return [distribution]
 
 
@@ -161,6 +173,8 @@ class DeclarativeEbaStressSpider(DeclarativeSpider):
         "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2014"
     ]
     
+    sheet_prefixes = {'dataset/title': 'Stress report: '}
+
     def dataset_finder(self, selector):
         return selector.xpath('//div[@class="Timeline"]//dl')
 
@@ -168,6 +182,9 @@ class DeclarativeEbaStressSpider(DeclarativeSpider):
         return selector.xpath("dd[@class='TLDate']//text()").extract()[0]
         
     def dataset_title_finder(self, dataset, selector):
+        return selector.xpath("dt//text()").extract()[0].strip()
+
+    def dataset_description_finder(self, dataset, selector):
         return selector.xpath("dt//text()").extract()[0].strip()
 
     def distribution_description_finder(self, selector):
@@ -179,3 +196,9 @@ class DeclarativeEbaStressSpider(DeclarativeSpider):
             return "http://www.eba.europa.eu" + uris[0]
         else:
             return ""
+
+    def distribution_type_finder(self, selector):
+        return "dcat:Download"
+
+    def distribution_format_finder(self, selector):
+        return "PDF"
