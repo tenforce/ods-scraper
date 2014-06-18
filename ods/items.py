@@ -73,6 +73,7 @@ class DistributionItem(Item):
     dataset = Field()
     description = Field()
     access_url = Field()
+    distribution_type = Field()
 
     def __str__(self):
         return "DistributionItem(access_url=%s)" % self['access_url']

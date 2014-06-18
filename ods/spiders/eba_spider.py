@@ -53,6 +53,7 @@ class EbaTableSpider(OdsSpider):
 
                 item['description'] = " ".join([base_title , date])
                 item['access_url'] = urlparse.urljoin("http://www.eba.europa.eu", link.xpath("@href").extract()[0])
+                item['distribution_type'] = "dcat:Download"
 
                 dataset['title'] = item['description']
                 dataset['issued'] = date
@@ -96,6 +97,7 @@ class EbaExerciseSpider(Spider):
 
                 item['description'] = desc
                 item['access_url'] = urlparse.urljoin("http://www.eba.europa.eu", link.xpath("@href").extract()[0])
+                item['distribution_type'] = "dcat:Download"
         
                 dataset['title'] = item['description']
                 dataset['spatial'] = spatial
@@ -148,6 +150,7 @@ class EbaStressSpider(OdsSpider):
         distribution = DistributionItem()
         distribution['access_url'] =  uri
         distribution['description'] = ''.join(selector.xpath("dd//text()").extract())
+        distribution['distribution_type'] = "dcat:Download"
         return [distribution]
 
 
@@ -179,3 +182,6 @@ class DeclarativeEbaStressSpider(DeclarativeSpider):
             return "http://www.eba.europa.eu" + uris[0]
         else:
             return ""
+
+    def distribution_type_finder(self, selector):
+        "dcat:Download"

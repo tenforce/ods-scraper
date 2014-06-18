@@ -99,7 +99,10 @@ class DeclarativeSpider(OdsSpider):
     def distribution_access_url_finder(self, distribution_selector):
         """Returns the description of the distribution."""
         return ""
-
+    
+    def distribution_type_finder(self, distribution_selector):
+        """Returns the distribution_type of the distribution."""
+        return ""
 
     ## PLUMBING
     def parse_datasets(self, selector, response):
