@@ -32,7 +32,7 @@ class EbaTableSpider(OdsSpider):
     ]
 
     sheet_defaults = {'sheet/spider': 'EbaTableSpider'}
-    sheet_prefixes = {'dataset/title': 'Dataset title prefix: '}
+    sheet_prefixes = {'dataset/title': ''}
     
     def parse_datasets(self , selector, response):
         """Parses the datasets from the response."""
@@ -73,6 +73,8 @@ class EbaExerciseSpider(Spider):
         "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2011/results"
     ]
     name="ebaExercise"
+
+    sheet_prefixes = {'dataset/title': 'Capital Exercise for bank: '}
 
     def parse(self, response):
         sel = Selector(response)
@@ -122,6 +124,8 @@ class EbaStressSpider(OdsSpider):
         "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2014"
     ]
 
+    sheet_prefixes = {'dataset/title': 'Stress report: '}
+
     def parse_datasets(self, selector, response):
         """Parses the datasets from the response."""
         datasets = []
@@ -164,6 +168,8 @@ class DeclarativeEbaStressSpider(DeclarativeSpider):
         "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2014"
     ]
     
+    sheet_prefixes = {'dataset/title': 'Stress report: '}
+
     def dataset_finder(self, selector):
         return selector.xpath('//div[@class="Timeline"]//dl')
 
