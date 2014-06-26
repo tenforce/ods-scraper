@@ -57,7 +57,8 @@ class EbaTableSpider(OdsSpider):
                 item['distribution_format'] = "XLS"
 
                 dataset['title'] = item['description']
-                dataset['description'] = item['description']
+#                dataset['description'] = item['description']
+                dataset['description'] = "Aggregated statistical data on a key aspect of the implementation of prudential framework in each Member State."
                 dataset['issued'] = date
                 dataset['uri'] = item['access_url']
 
@@ -72,11 +73,13 @@ class EbaExerciseSpider(Spider):
     """Parses the eu capital exercise.  This extends Spider instead of OdsSpider and provides a manual example."""
     start_urls = [
         "http://www.eba.europa.eu/risk-analysis-and-data/eu-capital-exercise/final-results",
-        "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2011/results"
+	"http://www.eba.europa.eu/risk-analysis-and-data/eu-capital-exercise/2011"
     ]
     name="ebaExercise"
 
     sheet_prefixes = {'dataset/title': 'Capital Exercise for bank: '}
+    mydesc = """ On 8 December 2011, the EBA's Board of Supervisors adopted the Recommendation on the creation of temporary capital buffers to restore market confidence, stemming from the so-called \"capital exercise\". The Recommendation was adopted to address the difficult situation in the EU banking system, especially with regard to the sovereign exposures.
+It called on National Authorities to require banks included in the sample to strengthen their capital positions by building up an exceptional and temporary capital buffer against sovereign debt exposures to reflect market prices as at the end of September 2011. In addition, banks were required to establish an exceptional and temporary buffer such that the Core Tier 1 capital ratio reaches a level of 9% by the end of June 2012."""
 
     def parse(self, response):
         sel = Selector(response)
@@ -105,8 +108,9 @@ class EbaExerciseSpider(Spider):
                 item['distribution_format'] = "PDF"
         
                 dataset['title'] = item['description']
-                dataset['description'] = item['description']
-                dataset['spatial'] = spatial
+#                dataset['description'] = item['description']
+                dataset['description'] = self.mydesc
+		dataset['spatial'] = spatial
                 dataset['uri'] = item['access_url']
 
                 datasets.append(dataset)
@@ -114,6 +118,22 @@ class EbaExerciseSpider(Spider):
         sheet.import_defaults({})
         sheet.import_prefixes({'dataset/title': 'Capital Exercise for bank: '})
         return [sheet]
+
+class EbaExercise2011Spider(EbaExerciseSpider):
+    """Parses the eu stress exercise.  This extends EU capital scraper as the page contains a similar structure."""
+    start_urls = [
+        "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2011/results"
+    ]
+
+    sheet_prefixes = {'dataset/title': 'Stress test for bank: '}
+
+    name="ebaExercise2011"
+
+    mydesc= "This dataset describes the results of the tests is to assess the resilience of financial institutions to adverse market developments, as well as to contribute to the overall assessment of systemic risk in the EU financial system."
+
+
+
+
 
 
 #################
