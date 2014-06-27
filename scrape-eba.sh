@@ -1,5 +1,5 @@
 #!/bin/sh
-SPIDERS="ebaTable ebaExercise ebaExercise2011"
+SPIDERS="ebaTable ebaExercise ebaStress2011"
 
 rm -R out; mkdir out
 

@@ -78,6 +78,7 @@ class EbaExerciseSpider(Spider):
     name="ebaExercise"
 
     sheet_prefixes = {'dataset/title': 'Capital Exercise for bank: '}
+
     mydesc = """ On 8 December 2011, the EBA's Board of Supervisors adopted the Recommendation on the creation of temporary capital buffers to restore market confidence, stemming from the so-called \"capital exercise\". The Recommendation was adopted to address the difficult situation in the EU banking system, especially with regard to the sovereign exposures.
 It called on National Authorities to require banks included in the sample to strengthen their capital positions by building up an exceptional and temporary capital buffer against sovereign debt exposures to reflect market prices as at the end of September 2011. In addition, banks were required to establish an exceptional and temporary buffer such that the Core Tier 1 capital ratio reaches a level of 9% by the end of June 2012."""
 
@@ -116,7 +117,7 @@ It called on National Authorities to require banks included in the sample to str
                 datasets.append(dataset)
         sheet.add_datasets( datasets )
         sheet.import_defaults({})
-        sheet.import_prefixes({'dataset/title': 'Capital Exercise for bank: '})
+        sheet.import_prefixes(self.sheet_prefixes)
         return [sheet]
 
 class EbaExercise2011Spider(EbaExerciseSpider):
@@ -127,9 +128,9 @@ class EbaExercise2011Spider(EbaExerciseSpider):
 
     sheet_prefixes = {'dataset/title': 'Stress test for bank: '}
 
-    name="ebaExercise2011"
+    name="ebaStress2011"
 
-    mydesc= "This dataset describes the results of the tests is to assess the resilience of financial institutions to adverse market developments, as well as to contribute to the overall assessment of systemic risk in the EU financial system."
+    mydesc= "The European Banking Authority (EBA) published the results of its 2011 EU-wide stress test of 90 banks in 21 countries1. The aim of the 2011 EU-wide stress test is to assess the resilience of financial institutions to adverse market developments, as well as to contribute to the overall assessment of systemic risk in the EU financial system."
 
 
 
