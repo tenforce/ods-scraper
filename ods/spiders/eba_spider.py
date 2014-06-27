@@ -59,6 +59,7 @@ class EbaTableSpider(OdsSpider):
                 dataset['title'] = item['description']
 #                dataset['description'] = item['description']
                 dataset['description'] = "Aggregated statistical data on a key aspect of the implementation of prudential framework in each Member State."
+                dataset['keyword_eng'] = "Credit, Credit and financial institutions, European banking, Financial market, Market risk, Market supervision, Monetary and financial indicators, Regulation and policy, Risk analysis, Supervisory convergence"
                 dataset['issued'] = date
                 dataset['uri'] = item['access_url']
 
@@ -81,6 +82,8 @@ class EbaExerciseSpider(Spider):
 
     mydesc = """ On 8 December 2011, the EBA's Board of Supervisors adopted the Recommendation on the creation of temporary capital buffers to restore market confidence, stemming from the so-called \"capital exercise\". The Recommendation was adopted to address the difficult situation in the EU banking system, especially with regard to the sovereign exposures.
 It called on National Authorities to require banks included in the sample to strengthen their capital positions by building up an exceptional and temporary capital buffer against sovereign debt exposures to reflect market prices as at the end of September 2011. In addition, banks were required to establish an exceptional and temporary buffer such that the Core Tier 1 capital ratio reaches a level of 9% by the end of June 2012."""
+
+    keyword ="Capital composition data, Credit, Credit and financial institutions, European banking, Financial market, Market risk, Market supervision, RWA Composition data, Regulation and policy, Risk analysis, Sovereign data, Supervisory convergence" 
 
     def parse(self, response):
         sel = Selector(response)
@@ -112,6 +115,7 @@ It called on National Authorities to require banks included in the sample to str
 #                dataset['description'] = item['description']
                 dataset['description'] = self.mydesc
 		dataset['spatial'] = spatial
+		dataset['keyword_eng'] = self.keyword
                 dataset['uri'] = item['access_url']
 
                 datasets.append(dataset)

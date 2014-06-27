@@ -88,6 +88,7 @@ class DatasetItem(OdsExtendedItem):
     description = Field()
     issued = Field()
     spatial = Field()
+    keyword_eng = Field()
     documentation_title = Field()
     documentation_url = Field()
 
