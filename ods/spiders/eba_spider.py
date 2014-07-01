@@ -70,20 +70,15 @@ class EbaTableSpider(OdsSpider):
 # EbaExerciseSpider
 ###################
 
-class EbaExerciseSpider(Spider):
-    """Parses the eu capital exercise.  This extends Spider instead of OdsSpider and provides a manual example."""
-    start_urls = [
-        "http://www.eba.europa.eu/risk-analysis-and-data/eu-capital-exercise/final-results",
-	"http://www.eba.europa.eu/risk-analysis-and-data/eu-capital-exercise/2011"
-    ]
-    name="ebaExercise"
+class EbaExerciseGenericSpider(Spider):
+    """Generic spider for the eu capital exercise.  Can be configured with start_urls and description.
 
-    sheet_prefixes = {'dataset/title': 'Capital Exercise for bank: '}
+This extends Spider instead of OdsSpider and provides a manual example"""
+    start_urls = []
+    dataset_description = ""
+    keywords = "Capital composition data, Credit, Credit and financial institutions, European banking, Financial market, Market risk, Market supervision, RWA Composition data, Regulation and policy, Risk analysis, Sovereign data, Supervisory convergence" 
 
-    mydesc = """ On 8 December 2011, the EBA's Board of Supervisors adopted the Recommendation on the creation of temporary capital buffers to restore market confidence, stemming from the so-called \"capital exercise\". The Recommendation was adopted to address the difficult situation in the EU banking system, especially with regard to the sovereign exposures.
-It called on National Authorities to require banks included in the sample to strengthen their capital positions by building up an exceptional and temporary capital buffer against sovereign debt exposures to reflect market prices as at the end of September 2011. In addition, banks were required to establish an exceptional and temporary buffer such that the Core Tier 1 capital ratio reaches a level of 9% by the end of June 2012."""
-
-    keyword ="Capital composition data, Credit, Credit and financial institutions, European banking, Financial market, Market risk, Market supervision, RWA Composition data, Regulation and policy, Risk analysis, Sovereign data, Supervisory convergence" 
+    keyword = "Capital composition data, Credit, Credit and financial institutions, European banking, Financial market, Market risk, Market supervision, RWA Composition data, Regulation and policy, Risk analysis, Sovereign data, Supervisory convergence" 
 
     def parse(self, response):
         sel = Selector(response)
@@ -112,7 +107,6 @@ It called on National Authorities to require banks included in the sample to str
                 item['distribution_format'] = "PDF"
         
                 dataset['title'] = item['description']
-#                dataset['description'] = item['description']
                 dataset['description'] = self.mydesc
 		dataset['spatial'] = spatial
 		dataset['keyword_eng'] = self.keyword
@@ -123,9 +117,23 @@ It called on National Authorities to require banks included in the sample to str
         sheet.import_defaults({})
         sheet.import_prefixes(self.sheet_prefixes)
         return [sheet]
+    
 
-class EbaExercise2011Spider(EbaExerciseSpider):
-    """Parses the eu stress exercise.  This extends EU capital scraper as the page contains a similar structure."""
+class EbaExerciseSpider(EbaExerciseGenericSpider):
+    """Spider for the Capital exercise.  Extends the generic exercise spider as multiple pages have the same structure, but different manual content."""
+    start_urls = [
+        "http://www.eba.europa.eu/risk-analysis-and-data/eu-capital-exercise/final-results",
+	"http://www.eba.europa.eu/risk-analysis-and-data/eu-capital-exercise/2011"
+    ]
+    sheet_prefixes = { 'dataset/title': 'Capital Exercise for bank: ' }
+    name="ebaExercise"
+
+    mydesc = """ On 8 December 2011, the EBA's Board of Supervisors adopted the Recommendation on the creation of temporary capital buffers to restore market confidence, stemming from the so-called \"capital exercise\". The Recommendation was adopted to address the difficult situation in the EU banking system, especially with regard to the sovereign exposures.
+It called on National Authorities to require banks included in the sample to strengthen their capital positions by building up an exceptional and temporary capital buffer against sovereign debt exposures to reflect market prices as at the end of September 2011. In addition, banks were required to establish an exceptional and temporary buffer such that the Core Tier 1 capital ratio reaches a level of 9% by the end of June 2012."""
+
+
+class EbaExercise2011Spider(EbaExerciseGenericSpider):
+    """Parses the eu stress exercise.  Extends the generic exercise spider as multiple pages have the same structure, but different manual content."""
     start_urls = [
         "http://www.eba.europa.eu/risk-analysis-and-data/eu-wide-stress-testing/2011/results"
     ]
